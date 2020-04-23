@@ -16,17 +16,6 @@
 
 require 'src/Dependencies'
 
--- physical screen dimensions
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-
--- virtual resolution dimensions
-VIRTUAL_WIDTH = 512
-VIRTUAL_HEIGHT = 288
-
--- images we load into memory from files to later draw onto the screen
-
-
 function love.load()
     -- initialize our nearest-neighbor filter
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -36,9 +25,26 @@ function love.load()
     -- app window title
     love.window.setTitle('Robo Mojo')
 
+    gFonts = {
+        ['small'] = love.graphics.newFont('fonts/font.ttf', 8),
+        ['medium'] = love.graphics.newFont('fonts/font.ttf', 16),
+        ['large'] = love.graphics.newFont('fonts/font.ttf', 32),
+    }
+    love.graphics.setFont(gFonts['small'])
+
     -- load up our global textures
     gTextures = {
-        ['robot_hero'] = love.graphics.newImage('graphics/BeepBoop2.png')
+        ['robot'] = love.graphics.newImage('graphics/BeepBoop2.png')
+    }
+
+    gStateMachine = StateMachine{
+        ['start'] = function() return StartState() end,
+        ['play'] = function() return PlayState() end
+    }
+    gStateMachine:change('start', {})
+
+    gFrames = {
+        ['walk'] = GenerateQuadsRobot(gTextures['robot'])
     }
 
     -- initialize our virtual resolution
@@ -53,17 +59,37 @@ function love.resize(w, h)
     push:resize(w, h)
 end
 
+function love.update(dt)
+    gStateMachine:update(dt)
+
+    love.keyboard.keysPressed = {}
+end
+
 function love.keypressed(key)
-    if key == 'escape' then
-        love.event.quit()
+    -- add to our table of keys pressed this frame
+    love.keyboard.keysPressed[key] = true
+end
+
+
+--[[
+    A custom function that will let us test for individual keystrokes outside
+    of the default `love.keypressed` callback, since we can't call that logic
+    elsewhere by default.
+]]
+function love.keyboard.wasPressed(key)
+    if love.keyboard.keysPressed[key] then
+        return true
+    else
+        return false
     end
 end
 
-function love.draw()
-    push:start()
-    
-    -- render our robot
-    love.graphics.draw(gTextures['robot_hero'])
 
-    push:finish()
+function love.draw()
+    push:apply('start')
+
+    -- use the state machine to defer rendering to the current state we're in
+    gStateMachine:render()
+
+    push:apply('end')
 end

@@ -6,8 +6,9 @@ end
 
 function PlayState:update(dt)
 
+    self.robot:update(dt)
 end
 
 function PlayState:render()
-    self.robot.render()
+    self.robot:render()
 end

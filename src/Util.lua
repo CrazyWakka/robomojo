@@ -50,24 +50,36 @@ function GenerateQuadsRobot(atlas)
     local counter = 1
     local quads = {}
 
-    for i = 0, 3 do
-        -- smallest
-        quads[counter] = love.graphics.newQuad(x, y, 64, 64,
+    for i = 0, 5 do
+      
+        quads[counter] = love.graphics.newQuad(x, y, 56, 56,
             atlas:getDimensions())
         counter = counter + 1
-        -- medium
-        quads[counter] = love.graphics.newQuad(x + 64, y, 64, 64,
+     
+        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
             atlas:getDimensions())
         counter = counter + 1
-        -- large
-        quads[counter] = love.graphics.newQuad(x + 64, y, 64, 64,
+    
+        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
             atlas:getDimensions())
         counter = counter + 1
-        -- huge
+
+        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
+        atlas:getDimensions())
+        counter = counter + 1
+    
+        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
+            atlas:getDimensions())
+        counter = counter + 1
+
+        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
+            atlas:getDimensions())
+        counter = counter + 1
+    
 
         -- prepare X and Y for the next set of paddles
         x = 0
-        y = y + 64
+        y = y + 56
     end
 
     return quads

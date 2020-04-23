@@ -53,6 +53,11 @@ function love.load()
         fullscreen = false,
         resizable = true
     })
+
+    -- a table we'll use to keep track of which keys have been pressed this
+    -- frame, to get around the fact that LÖVE's default callback won't let us
+    -- test for input from within other functions
+    love.keyboard.keysPressed = {}
 end
 
 function love.resize(w, h)

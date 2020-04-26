@@ -1,12 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    -- Entity Class --
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
 
 Entity = Class{}
 
@@ -51,5 +42,5 @@ end
 function Entity:render()
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.currentAnimation:getCurrentFrame()],
         -- math.floor(self.x) + 8, math.floor(self.y) + 10, 0, self.direction == 'right' and 1 or -1, 1, 8, 10)
-        math.floor(self.x) + 8, math.floor(self.y) - 16, 0, self.direction == 'right' and 1 or -1, 1, 8, 10)
+        math.floor(self.x) + 4, math.floor(self.y) + 14, 0, self.direction == 'right' and 0.25 or -0.25, 0.25, 28, 28)
 end

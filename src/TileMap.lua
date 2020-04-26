@@ -1,9 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    -- TileMap Class --
-]]
 
 TileMap = Class{}
 

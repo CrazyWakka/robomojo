@@ -1,16 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-
-    -- Dependencies --
-
-    A file to organize all of the global dependencies for our project, as
-    well as the assets for our game, rather than pollute our main.lua file.
-]]
-
 --
 -- libraries
 --
@@ -38,10 +25,6 @@ require 'src/states/entity/PlayerIdleState'
 require 'src/states/entity/PlayerJumpState'
 require 'src/states/entity/PlayerWalkingState'
 
-require 'src/states/entity/snail/SnailChasingState'
-require 'src/states/entity/snail/SnailIdleState'
-require 'src/states/entity/snail/SnailMovingState'
-
 -- general
 require 'src/Animation'
 require 'src/Entity'
@@ -49,7 +32,6 @@ require 'src/GameObject'
 require 'src/GameLevel'
 require 'src/LevelMaker'
 require 'src/Player'
-require 'src/Snail'
 require 'src/Tile'
 require 'src/TileMap'
 

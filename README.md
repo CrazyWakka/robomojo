@@ -1,3 +1,3 @@
-# RoboMojo
+# Robo Mojo
 
-Silly attempt at a 2D game using LUA and Love2D
+A 2D Metroidvania game project

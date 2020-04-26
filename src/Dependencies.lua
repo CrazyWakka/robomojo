@@ -1,34 +1,108 @@
--- push is a library that will allow us to draw our game at a virtual
--- resolution, instead of however large our window is; used to provide
--- a more retro aesthetic
---
--- https://github.com/Ulydev/push
-push = require 'lib/push'
+--[[
+    GD50
+    Super Mario Bros. Remake
 
--- the "Class" library we're using will allow us to represent anything in
--- our game as code, rather than keeping track of many disparate variables and
--- methods
+    Author: Colton Ogden
+    cogden@cs50.harvard.edu
+
+    -- Dependencies --
+
+    A file to organize all of the global dependencies for our project, as
+    well as the assets for our game, rather than pollute our main.lua file.
+]]
+
 --
--- https://github.com/vrld/hump/blob/master/class.lua
+-- libraries
+--
 Class = require 'lib/class'
+push = require 'lib/push'
+Timer = require 'lib/knife.timer'
 
--- a few global constants, centralized
+--
+-- our own code
+--
+
+-- utility
 require 'src/constants'
-
--- our robot hero
-require 'src/Robot'
-
--- a basic StateMachine class which will allow us to transition to and from
--- game states smoothly and avoid monolithic code in one file
 require 'src/StateMachine'
-
--- utility functions, mainly for splitting our sprite sheet into various Quads
--- of differing sizes for paddles, balls, bricks, etc.
 require 'src/Util'
 
--- each of the individual states our game can be in at once; each state has
--- its own update and render methods that can be called by our state machine
--- each frame, to avoid bulky code in main.lua
+-- game states
 require 'src/states/BaseState'
-require 'src/states/PlayState'
-require 'src/states/StartState'
+require 'src/states/game/PlayState'
+require 'src/states/game/StartState'
+
+-- entity states
+require 'src/states/entity/PlayerFallingState'
+require 'src/states/entity/PlayerIdleState'
+require 'src/states/entity/PlayerJumpState'
+require 'src/states/entity/PlayerWalkingState'
+
+require 'src/states/entity/snail/SnailChasingState'
+require 'src/states/entity/snail/SnailIdleState'
+require 'src/states/entity/snail/SnailMovingState'
+
+-- general
+require 'src/Animation'
+require 'src/Entity'
+require 'src/GameObject'
+require 'src/GameLevel'
+require 'src/LevelMaker'
+require 'src/Player'
+require 'src/Snail'
+require 'src/Tile'
+require 'src/TileMap'
+
+
+gSounds = {
+    ['jump'] = love.audio.newSource('sounds/jump.wav'),
+    ['death'] = love.audio.newSource('sounds/death.wav'),
+    ['music'] = love.audio.newSource('sounds/music.wav'),
+    ['powerup-reveal'] = love.audio.newSource('sounds/powerup-reveal.wav'),
+    ['pickup'] = love.audio.newSource('sounds/pickup.wav'),
+    ['empty-block'] = love.audio.newSource('sounds/empty-block.wav'),
+    ['kill'] = love.audio.newSource('sounds/kill.wav'),
+    ['kill2'] = love.audio.newSource('sounds/kill2.wav')
+}
+
+gTextures = {
+    ['tiles'] = love.graphics.newImage('graphics/tiles.png'),
+    ['toppers'] = love.graphics.newImage('graphics/tile_tops.png'),
+    ['bushes'] = love.graphics.newImage('graphics/bushes_and_cacti.png'),
+    ['jump-blocks'] = love.graphics.newImage('graphics/jump_blocks.png'),
+    ['gems'] = love.graphics.newImage('graphics/gems.png'),
+    ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
+    ['green-alien'] = love.graphics.newImage('graphics/green_alien.png'),
+    ['creatures'] = love.graphics.newImage('graphics/creatures.png'),
+
+    ['robot-hero'] = love.graphics.newImage('graphics/robot-hero.png')
+}
+
+gFrames = {
+    ['tiles'] = GenerateQuads(gTextures['tiles'], TILE_SIZE, TILE_SIZE),
+    
+    ['toppers'] = GenerateQuads(gTextures['toppers'], TILE_SIZE, TILE_SIZE),
+    
+    ['bushes'] = GenerateQuads(gTextures['bushes'], 16, 16),
+    ['jump-blocks'] = GenerateQuads(gTextures['jump-blocks'], 16, 16),
+    ['gems'] = GenerateQuads(gTextures['gems'], 16, 16),
+    ['backgrounds'] = GenerateQuads(gTextures['backgrounds'], 256, 128),
+    ['green-alien'] = GenerateQuads(gTextures['green-alien'], 16, 20),
+    ['creatures'] = GenerateQuads(gTextures['creatures'], 16, 16),
+
+    ['robot-hero'] = GenerateQuads(gTextures['robot-hero'], 56, 56)
+}
+
+-- these need to be added after gFrames is initialized because they refer to gFrames from within
+gFrames['tilesets'] = GenerateTileSets(gFrames['tiles'], 
+    TILE_SETS_WIDE, TILE_SETS_TALL, TILE_SET_WIDTH, TILE_SET_HEIGHT)
+
+gFrames['toppersets'] = GenerateTileSets(gFrames['toppers'], 
+    TOPPER_SETS_WIDE, TOPPER_SETS_TALL, TILE_SET_WIDTH, TILE_SET_HEIGHT)
+
+gFonts = {
+    ['small'] = love.graphics.newFont('fonts/font.ttf', 8),
+    ['medium'] = love.graphics.newFont('fonts/font.ttf', 16),
+    ['large'] = love.graphics.newFont('fonts/font.ttf', 32),
+    ['title'] = love.graphics.newFont('fonts/ArcadeAlternate.ttf', 32)
+}

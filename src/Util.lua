@@ -1,3 +1,14 @@
+--[[
+    GD50
+    Super Mario Bros. Remake
+
+    -- StartState Class --
+
+    Author: Colton Ogden
+    cogden@cs50.harvard.edu
+
+    Helper functions for writing Match-3.
+]]
 
 --[[
     Given an "atlas" (a texture with multiple sprites), as well as a
@@ -24,63 +35,67 @@ function GenerateQuads(atlas, tilewidth, tileheight)
 end
 
 --[[
-    Utility function for slicing tables, a la Python.
-
-    https://stackoverflow.com/questions/24821045/does-lua-have-something-like-pythons-slice
+    Divides quads we've generated via slicing our tile sheet into separate tile sets.
 ]]
-function table.slice(tbl, first, last, step)
-    local sliced = {}
-  
-    for i = first or 1, last or #tbl, step or 1 do
-      sliced[#sliced+1] = tbl[i]
+function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
+    local tilesets = {}
+    local tableCounter = 0
+    local sheetWidth = setsX * sizeX
+    local sheetHeight = setsY * sizeY
+
+    -- for each tile set on the X and Y
+    for tilesetY = 1, setsY do
+        for tilesetX = 1, setsX do
+            
+            -- tileset table
+            table.insert(tilesets, {})
+            tableCounter = tableCounter + 1
+
+            for y = sizeY * (tilesetY - 1) + 1, sizeY * (tilesetY - 1) + 1 + sizeY do
+                for x = sizeX * (tilesetX - 1) + 1, sizeX * (tilesetX - 1) + 1 + sizeX do
+                    table.insert(tilesets[tableCounter], quads[sheetWidth * (y - 1) + x])
+                end
+            end
+        end
     end
-  
-    return sliced
+
+    return tilesets
 end
 
 --[[
-    This function is specifically made to piece out the paddles from the
-    sprite sheet. For this, we have to piece out the paddles a little more
-    manually, since they are all different sizes.
+    Recursive table printing function.
+    https://coronalabs.com/blog/2014/09/02/tutorial-printing-table-contents/
 ]]
-function GenerateQuadsRobot(atlas)
-    local x = 0
-    local y = 0
-
-    local counter = 1
-    local quads = {}
-
-    for i = 0, 5 do
-      
-        quads[counter] = love.graphics.newQuad(x, y, 56, 56,
-            atlas:getDimensions())
-        counter = counter + 1
-     
-        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
-            atlas:getDimensions())
-        counter = counter + 1
-    
-        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
-            atlas:getDimensions())
-        counter = counter + 1
-
-        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
-        atlas:getDimensions())
-        counter = counter + 1
-    
-        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
-            atlas:getDimensions())
-        counter = counter + 1
-
-        quads[counter] = love.graphics.newQuad(x + 56, y, 56, 56,
-            atlas:getDimensions())
-        counter = counter + 1
-    
-
-        -- prepare X and Y for the next set of paddles
-        x = 0
-        y = y + 56
+function print_r ( t )
+    local print_r_cache={}
+    local function sub_print_r(t,indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent.."*"..tostring(t))
+        else
+            print_r_cache[tostring(t)]=true
+            if (type(t)=="table") then
+                for pos,val in pairs(t) do
+                    if (type(val)=="table") then
+                        print(indent.."["..pos.."] => "..tostring(t).." {")
+                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                        print(indent..string.rep(" ",string.len(pos)+6).."}")
+                    elseif (type(val)=="string") then
+                        print(indent.."["..pos..'] => "'..val..'"')
+                    else
+                        print(indent.."["..pos.."] => "..tostring(val))
+                    end
+                end
+            else
+                print(indent..tostring(t))
+            end
+        end
     end
-
-    return quads
+    if (type(t)=="table") then
+        print(tostring(t).." {")
+        sub_print_r(t,"  ")
+        print("}")
+    else
+        sub_print_r(t,"  ")
+    end
+    print()
 end

@@ -1,23 +1,23 @@
 
-PlayerWalkingState = Class{__includes = BaseState}
+PlayerCrouchingState = Class{__includes = BaseState}
 
-function PlayerWalkingState:init(player)
+function PlayerCrouchingState:init(player)
     self.player = player
     self.animation = Animation {
-        frames = {7, 8, 9},
-        interval = 0.1
+        frames = {19},
+        interval = 1
     }
     self.player.currentAnimation = self.animation
 end
 
-function PlayerWalkingState:update(dt)
+function PlayerCrouchingState:update(dt)
     self.player.currentAnimation:update(dt)
 
-    -- idle if we're not pressing anything at all
-    if not love.keyboard.isDown('left') and not love.keyboard.isDown('right') then
+    if not love.keyboard.isDown('down') and not love.keyboard.isDown('left') and not love.keyboard.isDown('right') then
         self.player:changeState('idle')
-    elseif love.keyboard.isDown('down') then
-        self.player:changeState('crawling')
+    elseif love.keyboard.isDown('down') and love.keyboard.isDown('left') or love.keyboard.isDown('right') then
+        self.player:changeState('crawling')   
+
     else
         local tileBottomLeft = self.player.map:pointToTile(self.player.x + 1, self.player.y + self.player.height)
         local tileBottomRight = self.player.map:pointToTile(self.player.x + self.player.width - 1, self.player.y + self.player.height)
@@ -29,18 +29,9 @@ function PlayerWalkingState:update(dt)
 
         self.player.y = self.player.y - 1
 
-        -- check to see whether there are any tiles beneath us
         if #collidedObjects == 0 and (tileBottomLeft and tileBottomRight) and (not tileBottomLeft:collidable() and not tileBottomRight:collidable()) then
             self.player.dy = 0
             self.player:changeState('falling')
-        elseif love.keyboard.isDown('left') then
-            self.player.x = self.player.x - PLAYER_WALK_SPEED * dt
-            self.player.direction = 'left'
-            self.player:checkLeftCollisions(dt)
-        elseif love.keyboard.isDown('right') then
-            self.player.x = self.player.x + PLAYER_WALK_SPEED * dt
-            self.player.direction = 'right'
-            self.player:checkRightCollisions(dt)
         end
     end
 

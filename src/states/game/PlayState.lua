@@ -1,9 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    -- PlayState Class --
-]]
 
 PlayState = Class{__includes = BaseState}
 
@@ -26,7 +20,9 @@ function PlayState:init()
             ['idle'] = function() return PlayerIdleState(self.player) end,
             ['walking'] = function() return PlayerWalkingState(self.player) end,
             ['jump'] = function() return PlayerJumpState(self.player, self.gravityAmount) end,
-            ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end
+            ['falling'] = function() return PlayerFallingState(self.player, self.gravityAmount) end,
+            ['crawling'] = function() return PlayerCrawlingState(self.player) end,
+            ['crouching'] = function() return PlayerCrouchingState(self.player) end
         },
         map = self.tileMap,
         level = self.level

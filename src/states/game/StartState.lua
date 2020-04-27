@@ -1,12 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    -- StartState Class --
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
 
 StartState = Class{__includes = BaseState}
 

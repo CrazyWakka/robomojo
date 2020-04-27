@@ -1,12 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    -- PlayerFallingState Class --
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
 
 PlayerFallingState = Class{__includes = BaseState}
 

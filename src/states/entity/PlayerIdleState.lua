@@ -1,10 +1,3 @@
---[[
-    GD50
-    Super Mario Bros. Remake
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
 
 PlayerIdleState = Class{__includes = BaseState}
 
@@ -22,6 +15,10 @@ end
 function PlayerIdleState:update(dt)
     if love.keyboard.isDown('left') or love.keyboard.isDown('right') then
         self.player:changeState('walking')
+    end
+
+    if love.keyboard.isDown('down') then
+        self.player:changeState('crawling')
     end
 
     if love.keyboard.wasPressed('space') then
